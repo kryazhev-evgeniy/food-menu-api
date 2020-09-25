@@ -27,20 +27,22 @@ router.post("/", async (req, res) => {
       res.status(404).json({ message: err.message });
     });
 });
-router.delete("/", async (req, res) => {
-  console.log(req.body);
-  await User.findByIdAndDelete(req.body.id, (err) => {
-    if (err) {
-      res.status(404).json({
-        message: err.message,
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }, async (req, res) => {
+    console.log(req.body);
+    await User.findByIdAndDelete(req.body.id, (err) => {
+      if (err) {
+        res.status(404).json({
+          message: err.message,
+        });
+      }
+      res.status(200).json({
+        message: "ok",
       });
-    }
-    res.status(200).json({
-      message: "ok",
     });
-  });
-});
-
+  })
+);
 router.post("/auth", async (req, res) => {
   if (req.body.password && req.body.login) {
     const user = await User.findOne(
@@ -76,5 +78,28 @@ router.post("/auth", async (req, res) => {
     });
   }
 });
+
+router.put(
+  "/setpass",
+  passport.authenticate("jwt", { session: true }),
+  async (req, res) => {
+    const user = await User.findByIdAndUpdate(
+      req.body.id,
+      {
+        password: req.body.passport,
+      },
+      { new: true },
+      (err, user) => {
+        if (err) {
+          res.status(404).json({
+            message: err.message,
+          });
+        } else {
+          res.status(200).json(user);
+        }
+      }
+    );
+  }
+);
 
 module.exports = router;

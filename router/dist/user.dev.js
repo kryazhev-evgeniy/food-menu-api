@@ -2,11 +2,19 @@
 
 var express = require("express");
 
+var jwt = require("jwt-simple");
+
 var router = express.Router();
 
 var User = require("../models/User");
 
-router.get("/", function _callee(req, res) {
+var config = require("../config");
+
+var passport = require("passport");
+
+router.get("/", passport.authenticate("jwt", {
+  session: false
+}), function _callee(req, res) {
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -48,7 +56,9 @@ router.post("/", function _callee2(req, res) {
     }
   });
 });
-router["delete"]("/", function _callee3(req, res) {
+router["delete"]("/", passport.authenticate("jwt", {
+  session: false
+}, function _callee3(req, res) {
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
@@ -70,6 +80,94 @@ router["delete"]("/", function _callee3(req, res) {
         case 3:
         case "end":
           return _context3.stop();
+      }
+    }
+  });
+}));
+router.post("/auth", function _callee4(req, res) {
+  var user;
+  return regeneratorRuntime.async(function _callee4$(_context4) {
+    while (1) {
+      switch (_context4.prev = _context4.next) {
+        case 0:
+          if (!(req.body.password && req.body.login)) {
+            _context4.next = 6;
+            break;
+          }
+
+          _context4.next = 3;
+          return regeneratorRuntime.awrap(User.findOne({
+            login: req.body.login,
+            password: req.body.password
+          }, function (err, user) {
+            if (err) {
+              res.status(401).json({
+                message: "что-то пошло не так"
+              });
+            }
+
+            if (user) {
+              var payload = {
+                id: user._id,
+                login: user.login
+              };
+              var token = jwt.encode(payload, config.secretKey);
+              res.status(200).json({
+                token: token
+              });
+            } else {
+              res.status(401).json({
+                message: "Такой пользователь не зарегистрирован"
+              });
+            }
+          }));
+
+        case 3:
+          user = _context4.sent;
+          _context4.next = 7;
+          break;
+
+        case 6:
+          res.status(401).json({
+            message: "Ведите логин и авроль"
+          });
+
+        case 7:
+        case "end":
+          return _context4.stop();
+      }
+    }
+  });
+});
+router.put("/setpass", passport.authenticate("jwt", {
+  session: true
+}), function _callee5(req, res) {
+  var user;
+  return regeneratorRuntime.async(function _callee5$(_context5) {
+    while (1) {
+      switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.next = 2;
+          return regeneratorRuntime.awrap(User.findByIdAndUpdate(req.body.id, {
+            password: req.body.passport
+          }, {
+            "new": true
+          }, function (err, user) {
+            if (err) {
+              res.status(404).json({
+                message: err.message
+              });
+            } else {
+              res.status(200).json(user);
+            }
+          }));
+
+        case 2:
+          user = _context5.sent;
+
+        case 3:
+        case "end":
+          return _context5.stop();
       }
     }
   });
