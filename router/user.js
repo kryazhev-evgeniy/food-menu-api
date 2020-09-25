@@ -29,7 +29,7 @@ router.post("/", async (req, res) => {
 });
 router.delete(
   "/",
-  passport.authenticate("jwt", { session: false }, async (req, res) => {
+  async (req, res) => {
     console.log(req.body);
     await User.findByIdAndDelete(req.body.id, (err) => {
       if (err) {
