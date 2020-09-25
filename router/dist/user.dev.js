@@ -56,9 +56,7 @@ router.post("/", function _callee2(req, res) {
     }
   });
 });
-router["delete"]("/", passport.authenticate("jwt", {
-  session: false
-}, function _callee3(req, res) {
+router["delete"]("/", function _callee3(req, res) {
   return regeneratorRuntime.async(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
@@ -83,7 +81,7 @@ router["delete"]("/", passport.authenticate("jwt", {
       }
     }
   });
-}));
+});
 router.post("/auth", function _callee4(req, res) {
   var user;
   return regeneratorRuntime.async(function _callee4$(_context4) {
