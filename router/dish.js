@@ -1,10 +1,36 @@
 const express = require("express");
 const router = express.Router();
+const Dish = require("../models/Dish");
 
-router.get("/", (req, res) => {
-  res.json({
-    Message: "Hello World"
-  });
+router.get("/", async (req, res) => {
+  const dishes = await Dish.find({});
+  if (dishes) {
+    res.status(200).json(dishes);
+  } else {
+    res.status(404).json({
+      message: "Not dishes",
+    });
+  }
 });
+router.post("/", async (req, res) => {
+  if (req.body) {
+    const dish = new Dish(req.body);
+    await dish
+      .save()
+      .then((doc) => {
+        res.status(200).json(doc);
+      })
+      .catch((err) => {
+        res.status(404).json({
+          message: err.message,
+        });
+      });
+  } else {
+    res.status(404).json({
+      message: "No data body",
+    });
+  }
+});
+router.put("/", async (req, res) => {});
 
 module.exports = router;

@@ -8,5 +8,12 @@ const DishSchema = new Schema({
   urlImage: {
     type: String,
   },
+  description: {
+    type: String,
+    default: "",
+  },
+  data: {
+    type: Object,
+  },
 });
 module.exports = mongoose.model("Dish", DishSchema);

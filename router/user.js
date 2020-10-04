@@ -61,6 +61,9 @@ router.post("/auth", async (req, res) => {
           const token = jwt.encode(payload, config.secretKey);
           res.status(200).json({
             token: token,
+            user: {
+              isAdmin: user.isAdmin,
+            },
           });
         } else {
           res.status(401).json({
