@@ -62,7 +62,9 @@ router.post("/auth", async (req, res) => {
           res.status(200).json({
             token: token,
             user: {
+              name: user.username,
               isAdmin: user.isAdmin,
+              data: user.data,
             },
           });
         } else {
