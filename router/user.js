@@ -7,7 +7,7 @@ const passport = require("passport");
 
 router.get(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  //passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await User.find({}, (err, docs) => {
       if (err) return console.log(err);
