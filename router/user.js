@@ -7,7 +7,7 @@ const passport = require("passport");
 
 router.get(
   "/",
-  //passport.authenticate("jwt", { session: false }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     await User.find({}, (err, docs) => {
       if (err) return console.log(err);
@@ -27,19 +27,23 @@ router.post("/", async (req, res) => {
       res.status(404).json({ message: err.message });
     });
 });
-router.delete("/", async (req, res) => {
-  console.log(req.body);
-  await User.findByIdAndDelete(req.body.id, (err) => {
-    if (err) {
-      res.status(404).json({
-        message: err.message,
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    console.log(req.body);
+    await User.findByIdAndDelete(req.body.id, (err) => {
+      if (err) {
+        res.status(404).json({
+          message: err.message,
+        });
+      }
+      res.status(200).json({
+        message: "ok",
       });
-    }
-    res.status(200).json({
-      message: "ok",
     });
-  });
-});
+  }
+);
 router.post("/auth", async (req, res) => {
   if (req.body.password && req.body.login) {
     const user = await User.findOne(
@@ -80,15 +84,14 @@ router.post("/auth", async (req, res) => {
     });
   }
 });
-
 router.put(
   "/setpass",
-  passport.authenticate("jwt", { session: true }),
+  passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.body.id,
       {
-        password: req.body.passport,
+        password: req.body.password,
       },
       { new: true },
       (err, user) => {

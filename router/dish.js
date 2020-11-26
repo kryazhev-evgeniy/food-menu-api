@@ -31,6 +31,33 @@ router.post("/", async (req, res) => {
     });
   }
 });
-router.put("/", async (req, res) => {});
+router.put("/", async (req, res) => {
+  if (req.body && req.body.id && req.body.new) {
+    await Dish.findByIdAndUpdate(req.body.id, req.body.new, { new: true })
+      .then((dish) => {
+        res.status(404).json(dish);
+      })
+      .catch((err) => {
+        res.status(404).json({
+          message: err.message,
+        });
+      });
+  } else {
+    res.status(404).json({
+      message: "Not Argumnents",
+    });
+  }
+});
+router.delete("/", async (req, res) => {
+  if (req.body && req.body.id) {
+    await Dish.findByIdAndDelete(req.body.id)
+      .then(() => {
+        res.status(200).json({ message: "Ok" });
+      })
+      .catch((err) => {
+        res.status(404).json({ message: err.message });
+      });
+  }
+});
 
 module.exports = router;
