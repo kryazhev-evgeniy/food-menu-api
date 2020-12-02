@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const config = require("./config");
-
 const app = express();
 
 app.use(cors());
@@ -27,6 +26,7 @@ require("./passport")(passport);
 app.use("/api/user", require("./router/user"));
 app.use("/api/dish", require("./router/dish"));
 app.use("/api/daydish", require("./router/dayDish"));
+app.use("/api/mealtime", require("./router/mealTime"));
 
 app.listen(config.port, () => {
   console.log(`Server started http://localhost:${config.port}`);

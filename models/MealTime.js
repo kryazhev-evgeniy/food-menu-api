@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const MealTimeSchema = new Schema({
   name: {
-    type: String
+    type: String,
   },
   dishes: {
-    type: Array
-  }
+    type: Array,
+  },
 });
 module.exports = mongoose.model("MealTime", MealTimeSchema);

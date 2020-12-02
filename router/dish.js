@@ -35,7 +35,7 @@ router.put("/", async (req, res) => {
   if (req.body && req.body.id && req.body.new) {
     await Dish.findByIdAndUpdate(req.body.id, req.body.new, { new: true })
       .then((dish) => {
-        res.status(404).json(dish);
+        res.status(200).json(dish);
       })
       .catch((err) => {
         res.status(404).json({
