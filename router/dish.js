@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
     await dish
       .save()
       .then((doc) => {
+        console.log(doc);
         res.status(200).json(doc);
       })
       .catch((err) => {

@@ -25,8 +25,15 @@ router.post("/", async (req, res) => {
     const mealtime = new MealTime(req.body);
     await mealtime
       .save()
-      .then((doc) => {
-        res.status(200).json(doc);
+      .then(async (doc) => {
+        let dishes = await Dish.find({
+          _id: { $in: doc.dishes },
+        });
+
+        res.status(200).json({
+          name: doc.name,
+          dishes,
+        });
       })
       .catch((err) => {
         res.status(404).json({
