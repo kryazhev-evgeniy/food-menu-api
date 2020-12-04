@@ -50,7 +50,7 @@ router.put("/", async (req, res) => {
   if (req.body && req.body.id && req.body.new) {
     await MealTime.findByIdAndUpdate(req.body.id, req.body.new, { new: true })
       .then((mealtime) => {
-        res.status(404).json(mealtime);
+        res.status(200).json(mealtime);
       })
       .catch((err) => {
         res.status(404).json({
