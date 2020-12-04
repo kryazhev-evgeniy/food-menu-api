@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 router.post("/", async (req, res) => {
   if (req.body) {
     const dish = new Dish(req.body);
