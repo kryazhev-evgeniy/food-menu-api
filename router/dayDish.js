@@ -3,6 +3,8 @@ const router = express.Router();
 const DayDish = require("../models/DayDish");
 const MealTime = require("../models/MealTime");
 const Dish = require("../models/Dish");
+const xlsx = require("node-xlsx");
+const fs = require("fs");
 
 router.get("/", async (req, res) => {
   await DayDish.find({})
@@ -69,6 +71,39 @@ router.delete("/", async (req, res) => {
     });
   } else {
     res.status(404).json({ message: "Not query params" });
+  }
+});
+
+router.get("/download/:id", async (req, res) => {
+  if (req.params.id) {
+    let data = [];
+    const fillepath = `${__dirname}\\doc.xlsx`;
+
+    const daydish = await DayDish.findById(req.params.id);
+    console.log(daydish);
+
+    data.push(["Меню", daydish.date]);
+    for (let index = 0; index < daydish.mealTimes.length; index++) {
+      const id_mealtime = daydish.mealTimes[index];
+      let mealtime = await MealTime.findById(id_mealtime);
+      let dishes_name = [];
+
+      for (let i_dish = 0; i_dish < mealtime.dishes.length; i_dish++) {
+        const element = mealtime.dishes[i_dish];
+        let dish = await Dish.findById(element);
+        dishes_name.push(dish.name);
+      }
+
+      console.log(mealtime.name);
+      data.push([mealtime.name], dishes_name);
+    }
+
+    console.log(data);
+    var buffer = xlsx.build([{ name: "mySheetName", data: data }]); // Returns a buffer
+    fs.writeFileSync(fillepath, buffer);
+    res.download(fillepath);
+  } else {
+    res.status(404).send("Not Params");
   }
 });
 

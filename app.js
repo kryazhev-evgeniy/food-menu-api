@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const config = require("./config");
 const app = express();
+const path = require("path");
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -19,6 +20,8 @@ mongoose
   .catch(() => {
     console.log("Error connect data base");
   });
+
+express.static(path.join(__dirname, "public"));
 
 app.use(passport.initialize());
 require("./passport")(passport);
